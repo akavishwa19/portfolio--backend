@@ -6,6 +6,10 @@ import { ApiResponse } from "../Utils/ApiResponse.js";
 import { ApiError } from "../Utils/ApiError.js";
 import { generateKeyPair } from "../Services/keyGeneration.js";
 import cryptoJs from 'crypto-js';
+import forge from 'node-forge';
+import fs from 'fs';
+import path from 'path';
+import express from 'express';
 
 const registerUser = async (req, res) => {
   try {
@@ -54,10 +58,21 @@ const loginUser = async (req, res) => {
       email: existingUser.email,
     };
 
+    
+
+    //GENERATE PRIVATE KEY
+    await generateKeyPair();
+    // console.log(privateKey);
+    // privateKey=privateKey.replace('-----BEGIN RSA PRIVATE KEY-----\n','')
+    // console.log(privateKey);
     //ENCRYPT PAYLOAD
+
+    let privateKey=fs.readFileSync('./Public/key.txt','utf-8');
+    console.log(privateKey)
+
     const encryptedData= await cryptoJs.AES.encrypt(
         JSON.stringify(payload),
-        process.env.CRYPTO_SECRET
+        privateKey
     ).toString()
 
     //SIGN JWT
@@ -75,6 +90,7 @@ const loginUser = async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, token, "user registered succesfully"));
   } catch (error) {
+    console.log(error)
     return res.status(500).json(new ApiError(500, error.message));
   }
 };
@@ -83,7 +99,7 @@ const findUser = async (req, res) => {
   try {
     const userId=req.userData.userId;
     const user=await User.findById(userId)
-    // generateKeyPair()
+
     return res
       .status(200)
       .json(

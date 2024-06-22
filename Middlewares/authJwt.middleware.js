@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { ApiError } from '../Utils/ApiError.js';
 import cryptoJs from 'crypto-js';
+import fs from 'fs';
 
 const jwtMiddleware=async (req,res,next)=>{
 
@@ -14,9 +15,9 @@ const jwtMiddleware=async (req,res,next)=>{
 
     //VERIFY JWT
     const data= await jwt.verify(token,process.env.JWT_SECRET);
-    
+    let privateKey=fs.readFileSync('./Public/key.txt','utf-8');
     //DECRYPT PAYLOAD 
-    const bytes = await cryptoJs.AES.decrypt(data.data, process.env.CRYPTO_SECRET);
+    const bytes = await cryptoJs.AES.decrypt(data.data, privateKey);
     const decryptedData =await JSON.parse(bytes.toString(cryptoJs.enc.Utf8));
     req.userData=decryptedData;  
     
