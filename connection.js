@@ -8,7 +8,7 @@ const connectDB = async()=>{
         console.log('connected to mongo instance succesfully')
     }
     catch(error){
-        console.log('cannot connect to mongo instance');
+        console.log('cannot connect to mongo instance due to '+error.message);
         process.exit(0)
     }
 }

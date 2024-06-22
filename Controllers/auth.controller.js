@@ -6,10 +6,8 @@ import { ApiResponse } from "../Utils/ApiResponse.js";
 import { ApiError } from "../Utils/ApiError.js";
 import { generateKeyPair } from "../Services/keyGeneration.js";
 import cryptoJs from 'crypto-js';
-import forge from 'node-forge';
 import fs from 'fs';
-import path from 'path';
-import express from 'express';
+
 
 const registerUser = async (req, res) => {
   try {
@@ -56,20 +54,15 @@ const loginUser = async (req, res) => {
     const payload = {
       userId: existingUser._id,
       email: existingUser.email,
-    };
-
-    
+    };    
 
     //GENERATE PRIVATE KEY
     await generateKeyPair();
-    // console.log(privateKey);
-    // privateKey=privateKey.replace('-----BEGIN RSA PRIVATE KEY-----\n','')
-    // console.log(privateKey);
-    //ENCRYPT PAYLOAD
 
+    //READ PRIVATE KEY
     let privateKey=fs.readFileSync('./Public/key.txt','utf-8');
-    console.log(privateKey)
 
+    //ENCRYPT PAYLOAD
     const encryptedData= await cryptoJs.AES.encrypt(
         JSON.stringify(payload),
         privateKey
@@ -90,7 +83,6 @@ const loginUser = async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, token, "user registered succesfully"));
   } catch (error) {
-    console.log(error)
     return res.status(500).json(new ApiError(500, error.message));
   }
 };
@@ -103,10 +95,9 @@ const findUser = async (req, res) => {
     return res
       .status(200)
       .json(
-        new ApiResponse(200, user, "lkess go")
+        new ApiResponse(200, user, "less go")
       );
   } catch (error) {
-    console.log(error)
     return res.status(500).json(new ApiError(500, error.message));
   }
 };
