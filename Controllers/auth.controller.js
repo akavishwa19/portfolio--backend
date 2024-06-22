@@ -7,6 +7,7 @@ import { ApiError } from "../Utils/ApiError.js";
 import { generateKeyPair } from "../Services/keyGeneration.js";
 import cryptoJs from 'crypto-js';
 import fs from 'fs';
+import nodemailer from 'nodemailer';
 
 
 const registerUser = async (req, res) => {
@@ -111,6 +112,32 @@ const sendOtp=async (req,res)=>{
       email,otp
     }
     const loginToken=await jwt.sign(payload,process.env.OTP_SECRET,{expiresIn:'10m'});
+
+    let mailTransporter=nodemailer.createTransport(
+      {
+        service:'gmail',
+        secure:true,
+        port:465,
+        auth:{
+          user:'akashvishwakarma.codeship@gmail.com',
+          pass:'nththyunttisubqk'
+        }
+      }
+    )
+    let mailDetails={
+      from:'akashvishwakarma.codeship@gmail.com',
+      to:email,
+      subject:'OTP',
+      text:`your 4 digit otp is : ${otp}`
+    }
+
+    mailTransporter.sendMail(mailDetails,(err,data)=>{
+      if(err){
+        console.log(err)
+      }
+    })
+
+
     return res.status(200).json(
       new ApiResponse(200,{otp,loginToken},'otp sent succesfully')
     )
