@@ -102,4 +102,42 @@ const findUser = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, findUser };
+//OTP LOGIN
+const sendOtp=async (req,res)=>{
+  try {
+    const {email}=req.body;
+    const otp=Math.floor(1000+Math.random()*9000);
+    const payload={
+      email,otp
+    }
+    const loginToken=await jwt.sign(payload,process.env.OTP_SECRET,{expiresIn:'10m'});
+    return res.status(200).json(
+      new ApiResponse(200,{otp,loginToken},'otp sent succesfully')
+    )
+  } catch (error) {
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
+
+const otpLogin=async(req,res)=>{
+  try{
+    const {otp}=req.body;
+    const payload=req.tokenPayloadOtp;
+    const sentOtp=payload.otp;
+    if(otp===sentOtp){
+
+      //LOGIC FOR SETTING 
+      return res.status(200).json(
+        new ApiResponse(200,{},'user logged in succesfully')
+      )
+    }
+    else{
+      return res.status(400).json(new ApiError(400, 'incorrect otp'));
+    }
+  }
+  catch(error){
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+}
+
+export { registerUser, loginUser, findUser ,sendOtp ,otpLogin };
