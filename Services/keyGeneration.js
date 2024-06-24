@@ -3,6 +3,7 @@ import fs from "fs";
 
 export const generateKeyPair = async () => {
 
+  // console.log('Cron job started. It will run every second.');
   //USE RSA FROM FORGE LIBRARY
   const rsa = forge.pki.rsa;
 
@@ -13,7 +14,11 @@ export const generateKeyPair = async () => {
   const publicKeyPem = await forge.pki.publicKeyToPem(keypair.publicKey);
   const privateKeyPem = await forge.pki.privateKeyToPem(keypair.privateKey);
 
+
   //CONVERT TO STRING AND WRITE ON FILE
-  const data = privateKeyPem.toString();
-  fs.writeFileSync("./Public/key.txt", data, "utf8");
+  const privateKey = privateKeyPem.toString();
+  fs.writeFileSync("./Public/privateKey.txt", privateKey, "utf8");
+
+  const publicKey = publicKeyPem.toString();
+  fs.writeFileSync("./Public/publicKey.txt", publicKey, "utf8");
 };

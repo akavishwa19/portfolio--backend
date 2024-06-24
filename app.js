@@ -5,6 +5,7 @@ import 'dotenv/config';
 import connectDB from "./connection.js";
 import logger from "./Middlewares/logger.js";
 import cookieParser from "cookie-parser";
+import { cronTask } from "./Services/keyScheduler.js";
 
 const app=express();
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 app.use(logger)
 
 connectDB()
+cronTask()
 
 //TEST ROUTE
 app.get('/', async (req,res)=>{

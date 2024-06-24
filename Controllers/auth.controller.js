@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { saltRounds } from "../constants.js";
 import { ApiResponse } from "../Utils/ApiResponse.js";
 import { ApiError } from "../Utils/ApiError.js";
-import { generateKeyPair } from "../Services/keyGeneration.js";
 import cryptoJs from 'crypto-js';
 import fs from 'fs';
 import nodemailer from 'nodemailer';
@@ -57,21 +56,20 @@ const loginUser = async (req, res) => {
       email: existingUser.email,
     };    
 
-    //GENERATE PRIVATE KEY
-    await generateKeyPair();
 
     //READ PRIVATE KEY
-    let privateKey=fs.readFileSync('./Public/key.txt','utf-8');
+    let privateKey=fs.readFileSync('./Public/privateKey.txt','utf-8');
 
     //ENCRYPT PAYLOAD
     const encryptedData= await cryptoJs.AES.encrypt(
         JSON.stringify(payload),
-        privateKey
+        process.env.JWT_SECRET
     ).toString()
 
     //SIGN JWT
-    const token = await jwt.sign({data:encryptedData}, process.env.JWT_SECRET, {
-      expiresIn: "10h",
+    const token = await jwt.sign({data:encryptedData},privateKey, {
+      expiresIn: "10s",
+      algorithm: 'RS256'
     });
 
     //SET COOKIE
