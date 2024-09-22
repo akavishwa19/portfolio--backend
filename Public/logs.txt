@@ -159,3 +159,7 @@ LOGS:
  Tue Jun 25 2024 00:27:04 GMT+0530 (India Standard Time) , ::1 , POST , /api/v1/users/login , localhost
  Tue Jun 25 2024 00:27:07 GMT+0530 (India Standard Time) , ::1 , GET , /api/v1/users/find-user , localhost
  Tue Jun 25 2024 00:27:14 GMT+0530 (India Standard Time) , ::1 , GET , /api/v1/users/find-user , localhost
+ Sun Sep 22 2024 15:09:42 GMT+0530 (India Standard Time) , ::1 , POST , /api/v1/users/send-mail , localhost
+ Sun Sep 22 2024 15:10:24 GMT+0530 (India Standard Time) , ::1 , POST , /api/v1/users/send-mail , localhost
+ Sun Sep 22 2024 15:11:50 GMT+0530 (India Standard Time) , ::1 , POST , /api/v1/users/send-mail , localhost
+ Sun Sep 22 2024 15:14:24 GMT+0530 (India Standard Time) , ::1 , POST , /api/v1/users/send-mail , localhost
