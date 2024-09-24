@@ -141,6 +141,51 @@ const sendMail = async (req, res) => {
   }
 };
 
+const sendMessage = async (req, res) => {
+  try {
+    const { email, name, message } = req.body;
+
+    // const otp=Math.floor(1000+Math.random()*9000);
+    // const payload={
+    //   email,otp
+    // }
+    // const loginToken=await jwt.sign(payload,process.env.OTP_SECRET,{expiresIn:'10m'});
+
+    let mailTransporter = nodemailer.createTransport({
+      service: "gmail",
+      secure: true,
+      port: 465,
+      auth: {
+        user: "akashvishwakarma.codeship@gmail.com",
+        pass: "nththyunttisubqk",
+      },
+    });
+    let mailDetails = {
+      from: email,
+      to: "akashsheoran9code@gmail.com",
+      subject: "Someone tried to reach you from your portfolio",
+      html: `
+    <p>Hi,</p>
+    <p>You received a message from <strong>${name}</strong> (${email}):</p>
+    <p><em>${message}</em></p>
+  
+  `,
+    };
+
+    mailTransporter.sendMail(mailDetails, (err, data) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "mail sent succesfully"));
+  } catch (error) {
+    return res.status(500).json(new ApiError(500, error.message));
+  }
+};
+
 const otpLogin = async (req, res) => {
   try {
     const { otp } = req.body;
@@ -159,4 +204,4 @@ const otpLogin = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, findUser, sendMail, otpLogin };
+export { registerUser, loginUser, findUser, sendMail, otpLogin , sendMessage };
